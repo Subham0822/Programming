@@ -1,0 +1,18 @@
+from tkinter import *
+x_root = Tk()
+x_root.title("Text Display")
+x_root.geometry("656x333")
+x_root.minsize(100, 200)
+x_root.maxsize(1200, 988)
+def displayText():
+    entered_text = enter.get()
+    label.config(text=entered_text)
+enter = Entry(x_root, width=30)
+enter.pack(pady=10)
+frame = Frame(x_root, borderwidth=6, bg="red", relief=SUNKEN)
+frame.pack(anchor="center", pady=10)
+b1 = Button(frame, fg="blue", text="Print", command=displayText)
+b1.pack(pady=10, padx=10)
+label = Label(x_root, text="", fg="blue")
+label.pack(pady=10)
+x_root.mainloop()
