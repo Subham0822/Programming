@@ -1,0 +1,5 @@
+day=int(input("Enter day: "))
+month=int(input("Enter month: "))
+year=int(input("Enter year: "))
+print(day, month, year, sep="/")
+print(day, month, year, sep=".")
