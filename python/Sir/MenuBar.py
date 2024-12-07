@@ -1,0 +1,31 @@
+from tkinter import *
+root=Tk()
+root.geometry("733x566")
+root.title("Pycharm")
+def myfunc():
+    print("this is my menu")
+mymenu=Menu(root)
+#for non dropdown menu
+#mymenu.add_command(label="File",command=myfunc)
+#mymenu.add_command(label="Exit",command=quit)
+#root.config(menu=mymenu)
+mainmenu=Menu(root)
+#for file menu
+m1=Menu(mainmenu,tearoff=0)
+m1.add_command(label="New Project",command=myfunc)
+m1.add_command(label="Save",command=myfunc)
+m1.add_separator()
+m1.add_command(label="Save As",command=myfunc)
+m1.add_command(label="Print",command=myfunc)
+mainmenu.add_cascade(label="File",menu=m1)
+root.config(menu=mainmenu)
+#for edit menu
+m2=Menu(mainmenu,tearoff=0)
+m2.add_command(label="Cut",command=myfunc)
+m2.add_command(label="Copy",command=myfunc)
+m2.add_separator()
+m2.add_command(label="Paste",command=myfunc)
+m2.add_command(label="Delete",command=myfunc)
+mainmenu.add_cascade(label="Edit",menu=m2)
+root.config(menu=mainmenu)
+root.mainloop()
