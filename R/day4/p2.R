@@ -1,0 +1,7 @@
+auto<-read.csv("C:\\Users\\RWIK\\Downloads\\auto-mpg.csv",header=TRUE)
+print(auto)
+nrow(auto)
+ncol(auto)
+summary(auto)
+colnames(auto)
+print(auto$cylinders)
