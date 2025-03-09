@@ -4,7 +4,6 @@
 
 int comparisonCount = 0;
 
-// Merge function to merge two sorted halves
 void merge(int arr[], int left, int mid, int right) {
     int i, j, k;
     int n1 = mid - left + 1;
