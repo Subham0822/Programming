@@ -1,124 +1,94 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 
-int comparisonCount = 0;
-
-void merge(int arr[], int left, int mid, int right) {
-    int i, j, k;
-    int n1 = mid - left + 1;
-    int n2 = right - mid;
-    
-    int L[n1], R[n2];
-    
-    for (i = 0; i < n1; i++)
-        L[i] = arr[left + i];
-    for (j = 0; j < n2; j++)
-        R[j] = arr[mid + 1 + j];
-    
-    i = 0;
-    j = 0;
-    k = left;
-    while (i < n1 && j < n2) {
-        comparisonCount++;
-        if (L[i] <= R[j]) {
-            arr[k] = L[i];
-            i++;
-        } else {
-            arr[k] = R[j];
-            j++;
-        }
-        k++;
+// Recursive function to solve Tower of Hanoi
+void towerOfHanoi(int n, char from_rod, char to_rod, char aux_rod) {
+    if (n == 1) {
+        printf("Move disk 1 from rod %c to rod %c\n", from_rod, to_rod);
+        return;
     }
-    
-    while (i < n1) {
-        arr[k] = L[i];
-        i++;
-        k++;
-    }
-    
-    while (j < n2) {
-        arr[k] = R[j];
-        j++;
-        k++;
-    }
+    towerOfHanoi(n - 1, from_rod, aux_rod, to_rod);
+    printf("Move disk %d from rod %c to rod %c\n", n, from_rod, to_rod);
+    towerOfHanoi(n - 1, aux_rod, to_rod, from_rod);
 }
 
-// Merge Sort function
-void mergeSort(int arr[], int left, int right) {
-    if (left < right) {
-        int mid = left + (right - left) / 2;
-        mergeSort(arr, left, mid);
-        mergeSort(arr, mid + 1, right);
-        merge(arr, left, mid, right);
+// Iterative Binary Search
+int binarySearchIterative(int arr[], int n, int key, int *comparisons) {
+    int low = 0, high = n - 1;
+    *comparisons = 0;
+    while (low <= high) {
+        (*comparisons)++;
+        int mid = low + (high - low) / 2;
+        if (arr[mid] == key)
+            return mid;
+        else if (arr[mid] < key)
+            low = mid + 1;
+        else
+            high = mid - 1;
     }
+    return -1;
 }
 
-// Function to print an array
-void printArray(int arr[], int n) {
-    for (int i = 0; i < n; i++) {
-        printf("%d ", arr[i]);
-    }
-    printf("\n");
-}
-
-// Function to take user input for an array
-void inputArray(int arr[], int n) {
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &arr[i]);
-    }
-}
-
-// Function to generate a random array within a given range
-void generateRandomArray(int arr[], int n, int lower, int upper) {
-    srand(time(0));
-    for (int i = 0; i < n; i++) {
-        arr[i] = (rand() % (upper - lower + 1)) + lower;
-    }
+// Recursive Binary Search
+int binarySearchRecursive(int arr[], int low, int high, int key, int *comparisons) {
+    if (low > high)
+        return -1;
+    (*comparisons)++;
+    int mid = low + (high - low) / 2;
+    if (arr[mid] == key)
+        return mid;
+    else if (arr[mid] < key)
+        return binarySearchRecursive(arr, mid + 1, high, key, comparisons);
+    else
+        return binarySearchRecursive(arr, low, mid - 1, key, comparisons);
 }
 
 int main() {
-    int n = 10;
-    int arr[10];
     int choice;
-    
     do {
         printf("\nChoose an option:\n");
-        printf("1. Best Case (Sorted Input)\n");
-        printf("2. Worst Case (Reverse Sorted Input)\n");
-        printf("3. Random Case (Randomly Generated Input)\n");
+        printf("1. Solve Tower of Hanoi\n");
+        printf("2. Perform Binary Search (Iterative)\n");
+        printf("3. Perform Binary Search (Recursive)\n");
         printf("4. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
         
         switch (choice) {
-            case 1:
-                printf("Enter 10 elements for Best Case (already sorted):\n");
-                inputArray(arr, n);
+            case 1: {
+                int n;
+                printf("Enter number of disks: ");
+                scanf("%d", &n);
+                towerOfHanoi(n, 'A', 'C', 'B');
                 break;
+            }
             case 2:
-                printf("Enter 10 elements for Worst Case (reverse sorted):\n");
-                inputArray(arr, n);
+            case 3: {
+                int n, key, comparisons = 0;
+                printf("Enter number of elements in sorted array: ");
+                scanf("%d", &n);
+                int arr[n];
+                printf("Enter %d sorted elements: ", n);
+                for (int i = 0; i < n; i++)
+                    scanf("%d", &arr[i]);
+                printf("Enter key to search: ");
+                scanf("%d", &key);
+                int result;
+                if (choice == 2)
+                    result = binarySearchIterative(arr, n, key, &comparisons);
+                else
+                    result = binarySearchRecursive(arr, 0, n - 1, key, &comparisons);
+                if (result != -1)
+                    printf("Key found at index %d with %d comparisons.\n", result, comparisons);
+                else
+                    printf("Key not found after %d comparisons.\n", comparisons);
                 break;
-            case 3:
-                printf("Generating 10 random elements in range 1-100 for Random Case...\n");
-                generateRandomArray(arr, n, 1, 100);
-                break;
+            }
             case 4:
                 printf("Exiting program...\n");
                 return 0;
             default:
                 printf("Invalid choice, please try again.\n");
-                continue;
         }
-        
-        printf("Input Array: ");
-        printArray(arr, n);
-        comparisonCount = 0;
-        mergeSort(arr, 0, n - 1);
-        printf("Sorted Output: ");
-        printArray(arr, n);
-        printf("Comparisons: %d\n", comparisonCount);
     } while (choice != 4);
     
     return 0;
