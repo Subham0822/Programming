@@ -28,13 +28,10 @@ void merge(int arr[], int left, int mid, int right) {
     k = left;
     while (i < n1 && j < n2) {
         if (L[i] <= R[j]) {
-            arr[k] = L[i];
-            i++;
+            arr[k++] = L[i++];
         } else {
-            arr[k] = R[j];
-            j++;
+            arr[k++] = R[j++];
         }
-        k++;
         comparisonCount++;
     }
     
@@ -84,7 +81,7 @@ int generateRandomArray(FILE* file, int n) {
     }
     for(i=0; i<n; i++){
         for(j=0; j<n; j++){
-            res[j] = arr[j][i];
+            res[j] = arr[i][j];
         }
         comparisonCount = 0;
         mergeSort(res, 0, n-1, n);
@@ -100,7 +97,6 @@ int main() {
     scanf("%d", &n);
     FILE* file = fopen("input.txt", "w");
     int arr[n];
-    int rand[n][n];
     if (file == NULL) {
         printf("Error opening file!\n");
         return 1;
@@ -111,18 +107,12 @@ int main() {
         scanf("%d", &ch);
         switch(ch){
             case 1:
-                printf("Enter the elements of the array: ");
-                inputArray(arr, n);
-                printf("Array: ");
-                printArray(arr, n);
-                comparisonCount = 0;
-                mergeSort(arr, 0, n-1, n);
-                printf("Comparisons: %d\n", comparisonCount);
-                printf("Sorted Array: ");
-                printArray(arr, n);
-                break;
             case 2:
-                printf("Enter the elements of the array: ");
+                if(ch==1){
+                    printf("Enter the elements of the array: ");
+                }else{
+                    printf("Enter the elements of the array in reverse order: ");
+                }
                 inputArray(arr, n);
                 printf("Array: ");
                 printArray(arr, n);
@@ -137,6 +127,7 @@ int main() {
                 printf("Total Comparisons: %d\n", res/n);
                 break;
             case 4:
+                fclose(file);
                 exit(1);
             default:
                 printf("Invalid choice!\n");
