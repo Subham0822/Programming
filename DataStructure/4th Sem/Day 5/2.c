@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-int comparisons = 0; // Global comparison counter
+#define N 10  // Number of elements per row
+
+int comparisons = 0; // Global variable to count comparisons
 
 // Swap function
 void swap(int *a, int *b) {
@@ -11,10 +13,43 @@ void swap(int *a, int *b) {
     *b = temp;
 }
 
-// Standard partition function for Quick Sort
-int partition(int arr[], int low, int high) {
-    int pivot = arr[high]; 
-    int i = (low - 1);
+// Function to generate a random permutation of numbers 0-9
+void generatePermutation(int arr[]) {
+    for (int i = 0; i < N; i++)
+        arr[i] = i;  // Fill array with 0 to 9
+
+    for (int i = N - 1; i > 0; i--) {  // Fisher-Yates Shuffle Algorithm
+        int j = rand() % (i + 1);
+        swap(&arr[i], &arr[j]);
+    }
+}
+
+// Function to write 10 unique permutations to permute.txt
+void writePermutationsToFile() {
+    FILE *file = fopen("permute.txt", "w");
+    if (file == NULL) {
+        printf("Error opening file!\n");
+        return;
+    }
+    srand(time(0));
+
+    for (int i = 0; i < N; i++) {
+        int arr[N];
+        generatePermutation(arr);
+        for (int j = 0; j < N; j++)
+            fprintf(file, "%d ", arr[j]);
+        fprintf(file, "\n");
+    }
+    fclose(file);
+}
+
+// Partition function for Randomized Quick Sort
+int randomizedPartition(int arr[], int low, int high) {
+    int randomIndex = low + rand() % (high - low + 1);
+    swap(&arr[randomIndex], &arr[high]); // Swap random pivot with last element
+
+    int pivot = arr[high];
+    int i = low - 1;
     
     for (int j = low; j < high; j++) {
         comparisons++;
@@ -23,19 +58,11 @@ int partition(int arr[], int low, int high) {
             swap(&arr[i], &arr[j]);
         }
     }
-
     swap(&arr[i + 1], &arr[high]);
-    return (i + 1);
+    return i + 1;
 }
 
-// Partition function for randomized Quick Sort
-int randomizedPartition(int arr[], int low, int high) {
-    int randomIndex = low + rand() % (high - low + 1);
-    swap(&arr[randomIndex], &arr[high]); // Swap random element with pivot
-    return partition(arr, low, high);
-}
-
-// Quick Sort function (Randomized)
+// Randomized Quick Sort function
 void randomizedQuickSort(int arr[], int low, int high) {
     if (low < high) {
         int pi = randomizedPartition(arr, low, high);
@@ -44,51 +71,48 @@ void randomizedQuickSort(int arr[], int low, int high) {
     }
 }
 
-// Function to generate a random array of given size
-void generateArray(int arr[], int size) {
-    for (int i = 0; i < size; i++) {
-        arr[i] = rand() % 1000000; // Random values between 0 and 999999
-    }
-}
-
-// Function to generate a random permutation of numbers 0-9
-void generateRandomPermutation(int arr[], int n) {
-    for (int i = 0; i < n; i++)
-        arr[i] = i; // Fill array with 0 to 9
-    
-    for (int i = n - 1; i > 0; i--) { // Shuffle using Fisher-Yates Algorithm
-        int j = rand() % (i + 1);
-        swap(&arr[i], &arr[j]);
-    }
-}
-
 int main() {
-    srand(time(0)); // Seed for randomness
-    int sizes[] = {10000, 100000, 1000000};
+    writePermutationsToFile(); // Generate and write permutations
 
-    for (int i = 0; i < 3; i++) {
-        int size = sizes[i];
-        int* arr = (int*)malloc(size * sizeof(int));
-        
-        generateArray(arr, size);
-        comparisons = 0;
-        
-        clock_t start = clock();
-        randomizedQuickSort(arr, 0, size - 1);
-        clock_t end = clock();
-        
-        printf("Size: %d | Comparisons: %d | Time: %.5f sec (Randomized Quick Sort)\n", size, comparisons, (double)(end - start) / CLOCKS_PER_SEC);
-        
-        free(arr);
+    FILE *file = fopen("permute.txt", "r");
+    if (file == NULL) {
+        printf("Error opening file!\n");
+        return 1;
     }
 
-    // Generate random permutation of numbers 0-9
-    int perm[10];
-    generateRandomPermutation(perm, 10);
-    printf("Random Permutation of 0-9: ");
-    for (int i = 0; i < 10; i++)
-        printf("%d ", perm[i]);
-    printf("\n");
+    int arr[N][N];
+    double totalTime = 0;
+    int totalComparisons = 0;
+
+    // Reading permutations from file
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++)
+            fscanf(file, "%d", &arr[i][j]);
+    fclose(file);
+
+    printf("\nSorting each row using Randomized Quick Sort:\n");
+
+    // Sorting each row and calculating time and comparisons
+    for (int i = 0; i < N; i++) {
+        comparisons = 0;
+        clock_t start = clock();
+        randomizedQuickSort(arr[i], 0, N - 1);
+        clock_t end = clock();
+
+        double timeTaken = (double)(end - start) / CLOCKS_PER_SEC;
+        totalTime += timeTaken;
+        totalComparisons += comparisons;
+
+        printf("\nSorted Row %d: ", i + 1);
+        for (int j = 0; j < N; j++)
+            printf("%d ", arr[i][j]);
+        printf("\nTime: %.6f sec | Comparisons: %d\n", timeTaken, comparisons);
+    }
+
+    // Calculate the average time and comparisons
+    printf("\nFinal Results:\n");
+    printf("Average Time: %.6f sec\n", totalTime / N);
+    printf("Average Comparisons: %d\n", totalComparisons / N);
 
     return 0;
 }
