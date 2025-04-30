@@ -57,23 +57,17 @@ void quickSort(int arr[], int low, int high, int pivotChoice) {
     }
 }
 
-// Function to generate sorted order
-void generateSorted(int arr[], int n) {
-    for (int i = 0; i < n; i++)
-        arr[i] = i + 1;
-}
-
-// Function to generate reverse order
-void generateReverseSorted(int arr[], int n) {
-    for (int i = 0; i < n; i++)
-        arr[i] = n - i;
-}
-
-// Function to generate random numbers in range (1-100)
-void generateRandom(int arr[], int n) {
-    srand(time(0));
-    for (int i = 0; i < n; i++)
-        arr[i] = (rand() % MAX) + 1;
+// Function to take user input for the array
+void inputArray(int arr[], int n, int orderChoice) {
+    if (orderChoice == 1 || orderChoice == 2) {
+        printf("Enter the elements:\n");
+        for (int i = 0; i < n; i++)
+            scanf("%d", &arr[i]);
+    } else {
+        srand(time(0));
+        for (int i = 0; i < n; i++)
+            arr[i] = (rand() % MAX) + 1;
+    }
 }
 
 // Function to print array
@@ -113,17 +107,12 @@ int main() {
 
             if (choiceOrder == 4) break;
 
-            // Generate input array based on order choice
-            if (choiceOrder == 1)
-                generateSorted(arr, n);
-            else if (choiceOrder == 2)
-                generateReverseSorted(arr, n);
-            else if (choiceOrder == 3)
-                generateRandom(arr, n);
-            else {
+            if (choiceOrder < 1 || choiceOrder > 3) {
                 printf("Invalid choice! Try again.\n");
                 continue;
             }
+
+            inputArray(arr, n, choiceOrder);
 
             printf("\nOriginal Array:\n");
             printArray(arr, n);
