@@ -95,6 +95,10 @@ int main() {
         scanf("%d", &choicePivot);
         
         if (choicePivot == 4) break;
+        if(choicePivot < 1 || choicePivot > 3) {
+            printf("Invalid choice! Try again.\n");
+            continue;
+        }
 
         while (1) {
             printf("\nChoose Input Order:\n");

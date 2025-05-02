@@ -17,7 +17,6 @@ void swap(int *a, int *b) {
 void generatePermutation(int arr[]) {
     for (int i = 0; i < N; i++)
         arr[i] = i;  // Fill array with 0 to 9
-
     for (int i = N - 1; i > 0; i--) {  // Fisher-Yates Shuffle Algorithm
         int j = rand() % (i + 1);
         swap(&arr[i], &arr[j]);
