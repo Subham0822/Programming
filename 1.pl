@@ -52,3 +52,17 @@ check_lst([H|T],[Type|Rest]):-
         isdigit(H)->Type=digit;
         Type=other),
     check_lst(T,Rest).
+
+
+% Swap two adjacent elements if needed
+swap([X, Y | T], [Y, X | T]) :-
+    X > Y, !.  % CUT: commit to the swap and don't try other rules
+
+swap([H | T], [H | T1]) :-
+    swap(T, T1).
+
+bubble_sort(List, SortedLst):-
+    swap(List, NewLst), !,
+    bubble_sort(NewLst, SortedLst).
+
+bubble_sort(Sorted, Sorted).
